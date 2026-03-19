@@ -1,0 +1,1020 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>StockKids</title>
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --sky:    #e8f4fd;
+      --white:  #ffffff;
+      --green:  #2ecc71;
+      --green2: #27ae60;
+      --blue:   #3498db;
+      --blue2:  #2980b9;
+      --yellow: #f1c40f;
+      --red:    #e74c3c;
+      --ink:    #1a2332;
+      --muted:  #7f8c9a;
+      --border: #dce8f0;
+      --radius: 18px;
+      --shadow: 0 4px 20px rgba(52,152,219,0.10);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--sky);
+      color: var(--ink);
+      min-height: 100vh;
+    }
+
+    h1, h2, h3, .logo-text, nav button {
+      font-family: 'Baloo 2', cursive;
+    }
+
+    /* ── HEADER ── */
+    header {
+      background: var(--white);
+      border-bottom: 2px solid var(--border);
+      padding: 0 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 68px;
+      position: sticky; top: 0; z-index: 50;
+    }
+
+    .logo {
+      display: flex; align-items: center; gap: 10px;
+    }
+    .logo-icon {
+      width: 40px; height: 40px;
+      background: var(--green);
+      border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.3rem;
+    }
+    .logo-text {
+      font-size: 1.4rem; font-weight: 800; color: var(--ink);
+    }
+    .logo-text span { color: var(--green); }
+
+    nav { display: flex; gap: 6px; }
+    nav button {
+      background: none;
+      border: 2px solid transparent;
+      border-radius: 12px;
+      padding: 8px 18px;
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--muted);
+      cursor: pointer;
+      transition: all 0.18s;
+    }
+    nav button:hover { color: var(--ink); background: var(--sky); }
+    nav button.active {
+      color: var(--blue);
+      background: #eaf4fd;
+      border-color: var(--blue);
+    }
+
+    .cash-pill {
+      background: #e8faf0;
+      border: 2px solid #b7ecd0;
+      border-radius: 999px;
+      padding: 7px 18px;
+      font-family: 'Baloo 2', cursive;
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--green2);
+    }
+
+    /* ── MAIN ── */
+    main {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 36px 20px 60px;
+    }
+
+    .page { display: none; }
+    .page.active { display: block; animation: up 0.25s ease; }
+    @keyframes up { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:none; } }
+
+    /* ── SECTION TITLE ── */
+    .section-title {
+      font-size: 1.6rem;
+      font-weight: 800;
+      margin-bottom: 6px;
+    }
+    .section-sub {
+      color: var(--muted);
+      font-size: 0.95rem;
+      margin-bottom: 28px;
+    }
+
+    /* ── CARDS ── */
+    .card {
+      background: var(--white);
+      border: 2px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+      box-shadow: var(--shadow);
+    }
+
+    /* ── SEARCH BAR ── */
+    .search-row {
+      display: flex; gap: 10px; margin-bottom: 28px;
+    }
+    .search-row input {
+      flex: 1;
+      border: 2px solid var(--border);
+      border-radius: 14px;
+      padding: 13px 18px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--ink);
+      background: var(--white);
+      outline: none;
+      transition: border-color 0.18s;
+      text-transform: uppercase;
+    }
+    .search-row input::placeholder { text-transform: none; color: var(--muted); font-weight: 400; }
+    .search-row input:focus { border-color: var(--blue); }
+
+    /* ── BUTTONS ── */
+    .btn {
+      font-family: 'Baloo 2', cursive;
+      font-size: 1rem;
+      font-weight: 700;
+      border: none;
+      border-radius: 14px;
+      padding: 13px 24px;
+      cursor: pointer;
+      transition: all 0.18s;
+      white-space: nowrap;
+    }
+    .btn-green  { background: var(--green);  color: #fff; }
+    .btn-green:hover  { background: var(--green2); transform: translateY(-1px); }
+    .btn-blue   { background: var(--blue);   color: #fff; }
+    .btn-blue:hover   { background: var(--blue2);  transform: translateY(-1px); }
+    .btn-ghost  { background: var(--sky); color: var(--ink); border: 2px solid var(--border); }
+    .btn-ghost:hover  { border-color: var(--blue); color: var(--blue); }
+    .btn-red    { background: var(--red);    color: #fff; }
+    .btn-red:hover    { background: #c0392b; transform: translateY(-1px); }
+    .btn-sm { padding: 8px 16px; font-size: 0.88rem; border-radius: 10px; }
+
+    /* ── QUICK PICKS ── */
+    .quick-label {
+      font-size: 0.78rem; font-weight: 600; color: var(--muted);
+      text-transform: uppercase; letter-spacing: 0.5px;
+      margin-bottom: 10px;
+    }
+    .quick-row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 32px; }
+    .quick-chip {
+      font-family: 'Baloo 2', cursive;
+      font-weight: 700; font-size: 0.88rem;
+      background: var(--white);
+      border: 2px solid var(--border);
+      border-radius: 999px;
+      padding: 6px 16px;
+      cursor: pointer;
+      transition: all 0.15s;
+      color: var(--ink);
+    }
+    .quick-chip:hover { border-color: var(--blue); color: var(--blue); background: #eaf4fd; }
+
+    /* ── STOCK RESULT ── */
+    #stockResult { margin-top: 4px; }
+
+    .result-header {
+      display: flex; justify-content: space-between; align-items: flex-start;
+      margin-bottom: 20px; flex-wrap: wrap; gap: 12px;
+    }
+    .result-ticker {
+      font-family: 'Baloo 2', cursive;
+      font-size: 2rem; font-weight: 800; color: var(--blue);
+    }
+    .result-name { color: var(--muted); font-size: 0.9rem; margin-top: 2px; }
+
+    .price-big {
+      font-family: 'Baloo 2', cursive;
+      font-size: 2.2rem; font-weight: 800; text-align: right;
+    }
+    .price-change {
+      font-size: 0.9rem; font-weight: 600; text-align: right; margin-top: 2px;
+    }
+    .up { color: var(--green2); }
+    .dn { color: var(--red); }
+
+    .stat-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+      gap: 10px; margin-bottom: 20px;
+    }
+    .stat-box {
+      background: var(--sky);
+      border-radius: 12px;
+      padding: 12px 14px;
+      border: 2px solid var(--border);
+    }
+    .stat-box .slbl { font-size: 0.68rem; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.4px; margin-bottom: 4px; }
+    .stat-box .sval { font-family: 'Baloo 2', cursive; font-size: 1rem; font-weight: 700; }
+
+    /* ── BUY FORM ── */
+    .buy-section {
+      background: var(--sky);
+      border: 2px solid var(--border);
+      border-radius: var(--radius);
+      padding: 22px;
+      margin-top: 16px;
+    }
+    .buy-section h3 {
+      font-size: 1.05rem; font-weight: 800; margin-bottom: 16px;
+      display: flex; align-items: center; gap: 8px;
+    }
+
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 14px; }
+    @media (max-width: 520px) { .form-grid { grid-template-columns: 1fr; } }
+
+    .field label {
+      display: block; font-size: 0.75rem; font-weight: 600;
+      color: var(--muted); text-transform: uppercase; letter-spacing: 0.4px;
+      margin-bottom: 6px;
+    }
+    .field input, .field select, .field textarea {
+      width: 100%;
+      border: 2px solid var(--border);
+      border-radius: 12px;
+      padding: 10px 14px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 500;
+      color: var(--ink);
+      background: var(--white);
+      outline: none;
+      transition: border-color 0.18s;
+    }
+    .field input:focus, .field select:focus, .field textarea:focus { border-color: var(--blue); }
+    .field textarea { resize: vertical; min-height: 80px; }
+    .field.full { grid-column: 1 / -1; }
+
+    .cost-bar {
+      display: flex; justify-content: space-between; align-items: center;
+      background: var(--white);
+      border: 2px solid var(--border);
+      border-radius: 12px;
+      padding: 12px 18px;
+      margin-bottom: 14px;
+      flex-wrap: wrap; gap: 10px;
+    }
+    .cost-item .ci-lbl { font-size: 0.7rem; font-weight: 600; color: var(--muted); text-transform: uppercase; }
+    .cost-item .ci-val { font-family: 'Baloo 2', cursive; font-size: 1.05rem; font-weight: 700; }
+
+    /* ── PORTFOLIO ── */
+    .port-stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 14px; margin-bottom: 28px;
+    }
+    .pstat {
+      background: var(--white);
+      border: 2px solid var(--border);
+      border-radius: var(--radius);
+      padding: 18px 20px;
+      box-shadow: var(--shadow);
+    }
+    .pstat .pl { font-size: 0.72rem; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.4px; margin-bottom: 6px; }
+    .pstat .pv { font-family: 'Baloo 2', cursive; font-size: 1.35rem; font-weight: 800; }
+
+    .holding {
+      background: var(--white);
+      border: 2px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px 22px;
+      margin-bottom: 14px;
+      box-shadow: var(--shadow);
+      transition: border-color 0.18s;
+    }
+    .holding:hover { border-color: var(--blue); }
+
+    .h-top {
+      display: flex; justify-content: space-between; align-items: flex-start;
+      margin-bottom: 14px; flex-wrap: wrap; gap: 10px;
+    }
+    .h-ticker { font-family: 'Baloo 2', cursive; font-size: 1.3rem; font-weight: 800; color: var(--blue); }
+    .h-name   { font-size: 0.82rem; color: var(--muted); margin-top: 2px; }
+
+    .h-stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
+      gap: 8px; margin-bottom: 14px;
+    }
+    .h-stat .hl { font-size: 0.66rem; font-weight: 600; color: var(--muted); text-transform: uppercase; margin-bottom: 2px; }
+    .h-stat .hv { font-family: 'Baloo 2', cursive; font-size: 0.95rem; font-weight: 700; }
+
+    .thesis-snip {
+      background: var(--sky);
+      border-left: 4px solid var(--blue);
+      border-radius: 0 10px 10px 0;
+      padding: 10px 14px;
+      font-size: 0.85rem;
+      color: var(--muted);
+      margin-bottom: 14px;
+      line-height: 1.55;
+    }
+
+    .h-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+
+    /* ── MODAL ── */
+    .overlay {
+      display: none; position: fixed; inset: 0;
+      background: rgba(26,35,50,0.45);
+      z-index: 200; align-items: center; justify-content: center;
+      padding: 20px;
+    }
+    .overlay.open { display: flex; animation: up 0.2s ease; }
+
+    .modal {
+      background: var(--white);
+      border: 2px solid var(--border);
+      border-radius: 22px;
+      padding: 28px;
+      width: 100%; max-width: 540px;
+      max-height: 88vh; overflow-y: auto;
+      position: relative;
+      box-shadow: 0 20px 60px rgba(52,152,219,0.18);
+    }
+    .modal h2 { font-size: 1.3rem; font-weight: 800; margin-bottom: 20px; }
+
+    .modal-close {
+      position: absolute; top: 16px; right: 16px;
+      background: var(--sky); border: 2px solid var(--border);
+      border-radius: 10px; width: 34px; height: 34px;
+      cursor: pointer; font-size: 1rem; color: var(--muted);
+      display: flex; align-items: center; justify-content: center;
+      transition: all 0.15s;
+    }
+    .modal-close:hover { border-color: var(--red); color: var(--red); }
+
+    .m-section { margin-bottom: 22px; }
+    .m-section h3 {
+      font-size: 0.78rem; font-weight: 600; color: var(--muted);
+      text-transform: uppercase; letter-spacing: 0.5px;
+      margin-bottom: 10px;
+    }
+
+    .thesis-entry {
+      background: var(--sky);
+      border-left: 4px solid var(--blue);
+      border-radius: 0 10px 10px 0;
+      padding: 12px 14px;
+      margin-bottom: 10px;
+    }
+    .te-meta { font-size: 0.7rem; color: var(--muted); margin-bottom: 5px; }
+    .te-text { font-size: 0.88rem; line-height: 1.55; }
+    .te-outlook {
+      display: inline-block; margin-top: 7px;
+      font-size: 0.7rem; font-weight: 700;
+      padding: 3px 10px; border-radius: 999px;
+      text-transform: uppercase;
+    }
+    .ol-bullish { background: #d5f5e3; color: var(--green2); }
+    .ol-neutral { background: #fef9e7; color: #b7950b; }
+    .ol-bearish { background: #fadbd8; color: var(--red); }
+
+    .reminder-row {
+      display: flex; justify-content: space-between; align-items: center;
+      background: var(--sky); border-radius: 10px;
+      padding: 10px 14px; margin-bottom: 8px; gap: 10px;
+    }
+    .rr-date { font-family: 'Baloo 2', cursive; font-size: 0.9rem; font-weight: 700; }
+    .rr-sub  { font-size: 0.72rem; color: var(--muted); margin-top: 2px; }
+
+    .reminder-badge {
+      display: inline-block;
+      background: #fef9e7; border: 2px solid #f9e79f;
+      color: #b7950b; font-size: 0.72rem; font-weight: 700;
+      padding: 3px 10px; border-radius: 999px;
+      text-transform: uppercase; letter-spacing: 0.3px;
+    }
+
+    /* ── LEARN ── */
+    .learn-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 16px;
+    }
+    .learn-card {
+      background: var(--white);
+      border: 2px solid var(--border);
+      border-radius: var(--radius);
+      padding: 22px;
+      cursor: pointer;
+      transition: all 0.2s;
+      box-shadow: var(--shadow);
+    }
+    .learn-card:hover { transform: translateY(-3px); border-color: var(--blue); box-shadow: 0 8px 28px rgba(52,152,219,0.14); }
+    .lc-top { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
+    .lc-icon {
+      width: 44px; height: 44px; border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.4rem; flex-shrink: 0;
+    }
+    .learn-card h3 { font-size: 1rem; font-weight: 800; }
+    .learn-card p { font-size: 0.83rem; color: var(--muted); line-height: 1.55; }
+
+    /* ── EMPTY STATE ── */
+    .empty { text-align: center; padding: 56px 20px; }
+    .empty .ei { font-size: 3.5rem; margin-bottom: 12px; }
+    .empty h3 { font-size: 1.1rem; font-weight: 800; margin-bottom: 8px; }
+    .empty p { font-size: 0.88rem; color: var(--muted); margin-bottom: 20px; }
+
+    /* ── TOAST ── */
+    #toast {
+      position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
+      background: var(--ink); color: #fff;
+      font-family: 'Baloo 2', cursive; font-weight: 700; font-size: 0.92rem;
+      padding: 12px 26px; border-radius: 999px;
+      opacity: 0; pointer-events: none; z-index: 999;
+      transition: opacity 0.25s; white-space: nowrap;
+    }
+    #toast.show { opacity: 1; }
+
+    /* ── LOADER ── */
+    .loader {
+      display: flex; align-items: center; justify-content: center;
+      gap: 10px; padding: 28px;
+      color: var(--muted); font-weight: 600;
+    }
+    .spin {
+      width: 20px; height: 20px;
+      border: 3px solid var(--border);
+      border-top-color: var(--blue);
+      border-radius: 50%;
+      animation: rot 0.65s linear infinite;
+    }
+    @keyframes rot { to { transform: rotate(360deg); } }
+
+    /* ── SCROLLBAR ── */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+    @media (max-width: 600px) {
+      header { padding: 0 14px; flex-wrap: wrap; height: auto; padding: 12px 14px; gap: 10px; }
+      nav button { padding: 7px 12px; font-size: 0.85rem; }
+      .price-big { font-size: 1.7rem; }
+      .result-ticker { font-size: 1.5rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="logo">
+    <div class="logo-icon">🌱</div>
+    <div class="logo-text">Stock<span>Kids</span></div>
+  </div>
+  <nav>
+    <button class="active" onclick="nav('explore', this)">🔍 Explore</button>
+    <button onclick="nav('portfolio', this)">💼 Portfolio</button>
+    <button onclick="nav('learn', this)">📚 Learn</button>
+  </nav>
+  <div class="cash-pill">💵 <span id="cashDisplay">$10,000.00</span></div>
+</header>
+
+<main>
+
+  <!-- ═══ EXPLORE ═══ -->
+  <div id="page-explore" class="page active">
+    <h2 class="section-title">Find a Company 🔍</h2>
+    <p class="section-sub">Search any stock symbol and buy shares with your virtual money!</p>
+
+    <div class="search-row">
+      <input id="tickerInput" type="text" placeholder="Type a symbol like AAPL, TSLA, AMZN…" maxlength="10"
+        onkeydown="if(event.key==='Enter') doSearch()"/>
+      <button class="btn btn-blue" onclick="doSearch()">Search</button>
+    </div>
+
+    <p class="quick-label">⚡ Popular companies</p>
+    <div class="quick-row">
+      <span class="quick-chip" onclick="quick('AAPL')">🍎 Apple</span>
+      <span class="quick-chip" onclick="quick('TSLA')">⚡ Tesla</span>
+      <span class="quick-chip" onclick="quick('AMZN')">📦 Amazon</span>
+      <span class="quick-chip" onclick="quick('GOOGL')">🔍 Google</span>
+      <span class="quick-chip" onclick="quick('DIS')">🏰 Disney</span>
+      <span class="quick-chip" onclick="quick('NVDA')">🎮 Nvidia</span>
+      <span class="quick-chip" onclick="quick('NKE')">👟 Nike</span>
+      <span class="quick-chip" onclick="quick('MCD')">🍟 McDonald's</span>
+    </div>
+
+    <div id="stockResult"></div>
+  </div>
+
+  <!-- ═══ PORTFOLIO ═══ -->
+  <div id="page-portfolio" class="page">
+    <h2 class="section-title">My Portfolio 💼</h2>
+    <p class="section-sub">Track everything you've invested in.</p>
+    <div class="port-stats" id="portStats"></div>
+    <div id="holdingsList"></div>
+  </div>
+
+  <!-- ═══ LEARN ═══ -->
+  <div id="page-learn" class="page">
+    <h2 class="section-title">Learn Investing 📚</h2>
+    <p class="section-sub">Tap any card to learn what it means!</p>
+    <div class="learn-grid" id="learnGrid"></div>
+  </div>
+
+</main>
+
+<!-- DETAIL MODAL -->
+<div class="overlay" id="detailOverlay">
+  <div class="modal">
+    <button class="modal-close" onclick="closeOverlay('detailOverlay')">✕</button>
+    <h2 id="detailTitle">Stock Detail</h2>
+
+    <div class="m-section">
+      <h3>📈 Current Status</h3>
+      <div id="detailStatus"></div>
+    </div>
+
+    <div class="m-section">
+      <h3>🧠 Your Investment Thesis</h3>
+      <div id="thesisList"></div>
+      <div class="field" style="margin-bottom:10px;">
+        <label>Add a note or update</label>
+        <textarea id="newNote" placeholder="Why do you still believe in this company? What changed?"></textarea>
+      </div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:2px;">
+        <div class="field" style="flex:1;min-width:130px;">
+          <label>Your outlook</label>
+          <select id="newOutlook">
+            <option value="bullish">🟢 Bullish — Going Up!</option>
+            <option value="neutral">🟡 Neutral — Not Sure</option>
+            <option value="bearish">🔴 Bearish — Worried</option>
+          </select>
+        </div>
+        <div style="display:flex;align-items:flex-end;padding-bottom:2px;">
+          <button class="btn btn-blue btn-sm" onclick="saveNote()">💾 Save Note</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="m-section">
+      <h3>⏰ Check-In Reminders</h3>
+      <div id="reminderList"></div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;">
+        <div class="field" style="flex:1;min-width:150px;">
+          <label>Your email</label>
+          <input type="email" id="remEmail" placeholder="you@email.com"/>
+        </div>
+        <div class="field" style="flex:1;min-width:130px;">
+          <label>Check in after…</label>
+          <select id="remPeriod">
+            <option value="7">1 Week</option>
+            <option value="30">1 Month</option>
+            <option value="90">3 Months</option>
+            <option value="365">1 Year</option>
+          </select>
+        </div>
+        <div style="display:flex;align-items:flex-end;padding-bottom:2px;">
+          <button class="btn btn-green btn-sm" onclick="addReminder()">Set ⏰</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="m-section">
+      <h3>💸 Sell Position</h3>
+      <div id="sellInfo" style="margin-bottom:12px;font-size:0.88rem;color:var(--muted);line-height:1.6;"></div>
+      <div style="display:flex;gap:8px;">
+        <button class="btn btn-red btn-sm" onclick="doSell()">Sell All Shares</button>
+        <button class="btn btn-ghost btn-sm" onclick="closeOverlay('detailOverlay')">Keep Holding</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- LEARN MODAL -->
+<div class="overlay" id="learnOverlay">
+  <div class="modal">
+    <button class="modal-close" onclick="closeOverlay('learnOverlay')">✕</button>
+    <h2 id="learnTitle"></h2>
+    <div id="learnBody" style="font-size:0.95rem;line-height:1.75;color:var(--muted);"></div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+// ─── STATE ───────────────────────────────────────────
+let cash = 10000;
+let portfolio = {};
+let activeDetail = null;
+let lastStock = null;
+
+// ─── NAV ─────────────────────────────────────────────
+function nav(page, btn) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+  document.getElementById('page-' + page).classList.add('active');
+  btn.classList.add('active');
+  if (page === 'portfolio') loadPortfolio();
+  if (page === 'learn') loadLearn();
+}
+
+// ─── UTILS ───────────────────────────────────────────
+const fmt = n => n == null ? 'N/A' : '$' + Number(n).toFixed(2);
+const fmtBig = n => {
+  if (!n) return 'N/A';
+  if (n >= 1e12) return '$' + (n/1e12).toFixed(2) + 'T';
+  if (n >= 1e9)  return '$' + (n/1e9).toFixed(2) + 'B';
+  if (n >= 1e6)  return '$' + (n/1e6).toFixed(2) + 'M';
+  return '$' + n.toLocaleString();
+};
+const fmtVol = n => {
+  if (!n) return 'N/A';
+  if (n >= 1e9) return (n/1e9).toFixed(1)+'B';
+  if (n >= 1e6) return (n/1e6).toFixed(1)+'M';
+  return n.toLocaleString();
+};
+function toast(msg) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  setTimeout(() => el.classList.remove('show'), 2600);
+}
+function closeOverlay(id) { document.getElementById(id).classList.remove('open'); }
+
+document.querySelectorAll('.overlay').forEach(o =>
+  o.addEventListener('click', e => { if (e.target === o) o.classList.remove('open'); })
+);
+
+// ─── FETCH STOCK (Yahoo Finance) ─────────────────────
+async function fetchStock(ticker) {
+  ticker = ticker.trim().toUpperCase();
+  const proxy = 'https://corsproxy.io/?';
+  const url = proxy + encodeURIComponent(
+    `https://query1.finance.yahoo.com/v8/finance/chart/${ticker}?interval=1d&range=5d`
+  );
+  const r = await fetch(url);
+  if (!r.ok) throw new Error('not found');
+  const d = await r.json();
+  const res = d.chart.result[0];
+  const meta = res.meta;
+  const q = res.indicators.quote[0];
+  const closes = res.timestamps
+    .map((t, i) => ({ date: new Date(t*1000).toLocaleDateString(), close: q.close[i] }))
+    .filter(x => x.close != null);
+  const last = closes[closes.length - 1];
+  const prev = closes[closes.length - 2] || last;
+  return {
+    ticker, company: meta.longName || meta.shortName || ticker,
+    price: last.close, prevClose: prev.close,
+    open: meta.regularMarketOpen, high: meta.regularMarketDayHigh,
+    low: meta.regularMarketDayLow, volume: meta.regularMarketVolume,
+    marketCap: meta.marketCap, exchange: meta.exchangeName
+  };
+}
+
+// ─── SEARCH ──────────────────────────────────────────
+function quick(t) { document.getElementById('tickerInput').value = t; doSearch(); }
+
+async function doSearch() {
+  const val = document.getElementById('tickerInput').value;
+  if (!val.trim()) return;
+  const el = document.getElementById('stockResult');
+  el.innerHTML = '<div class="loader"><div class="spin"></div> Fetching live data…</div>';
+  try {
+    const s = await fetchStock(val);
+    lastStock = s;
+    renderResult(s, el);
+  } catch(e) {
+    el.innerHTML = `<div class="card" style="text-align:center;padding:32px;">
+      <div style="font-size:3rem;margin-bottom:10px;">😕</div>
+      <p style="font-weight:700;">Couldn't find "<strong>${val.toUpperCase()}</strong>". Try AAPL, TSLA, or AMZN!</p>
+    </div>`;
+  }
+}
+
+function renderResult(s, container) {
+  const chg = s.price - s.prevClose;
+  const pct = (chg / s.prevClose) * 100;
+  const up  = chg >= 0;
+  const owned = portfolio[s.ticker];
+
+  container.innerHTML = `
+    <div class="card">
+      <div class="result-header">
+        <div>
+          <div class="result-ticker">${s.ticker}</div>
+          <div class="result-name">${s.company} · ${s.exchange || ''}</div>
+        </div>
+        <div>
+          <div class="price-big">${fmt(s.price)}</div>
+          <div class="price-change ${up ? 'up' : 'dn'}">${up ? '▲' : '▼'} ${Math.abs(chg).toFixed(2)} (${Math.abs(pct).toFixed(2)}%)</div>
+        </div>
+      </div>
+
+      <div class="stat-grid">
+        <div class="stat-box"><div class="slbl">Open</div><div class="sval">${fmt(s.open)}</div></div>
+        <div class="stat-box"><div class="slbl">High</div><div class="sval up">${fmt(s.high)}</div></div>
+        <div class="stat-box"><div class="slbl">Low</div><div class="sval dn">${fmt(s.low)}</div></div>
+        <div class="stat-box"><div class="slbl">Volume</div><div class="sval">${fmtVol(s.volume)}</div></div>
+        <div class="stat-box"><div class="slbl">Mkt Cap</div><div class="sval">${fmtBig(s.marketCap)}</div></div>
+        <div class="stat-box"><div class="slbl">Prev Close</div><div class="sval">${fmt(s.prevClose)}</div></div>
+      </div>
+
+      ${owned ? `<div style="background:#eafaf1;border:2px solid #b7ecd0;border-radius:12px;padding:10px 14px;margin-bottom:14px;font-size:0.85rem;color:var(--green2);font-weight:600;">✅ You already own ${owned.shares} share(s). Go to <strong>Portfolio</strong> to manage them.</div>` : ''}
+
+      <div class="buy-section">
+        <h3>🛒 Buy ${s.ticker}</h3>
+        <div class="form-grid">
+          <div class="field">
+            <label>Number of shares</label>
+            <input type="number" id="buyShares" value="1" min="0.01" step="0.01" oninput="updateCost()"/>
+          </div>
+          <div class="field">
+            <label>Plan to review in…</label>
+            <select id="buyCheckin">
+              <option value="7">1 Week</option>
+              <option value="30">1 Month</option>
+              <option value="90">3 Months</option>
+              <option value="365">1 Year</option>
+            </select>
+          </div>
+          <div class="field full">
+            <label>📝 Why are you buying this company?</label>
+            <textarea id="buyThesis" placeholder="I think ${s.company} is great because they make products I use every day, and they keep growing…"></textarea>
+          </div>
+          <div class="field full">
+            <label>⏰ Reminder email (optional)</label>
+            <input type="email" id="buyEmail" placeholder="your@email.com"/>
+          </div>
+        </div>
+
+        <div class="cost-bar">
+          <div class="cost-item"><div class="ci-lbl">Shares</div><div class="ci-val" id="cShares">1</div></div>
+          <div class="cost-item"><div class="ci-lbl">Price/share</div><div class="ci-val">${fmt(s.price)}</div></div>
+          <div class="cost-item"><div class="ci-lbl">Total cost</div><div class="ci-val" id="cTotal">${fmt(s.price)}</div></div>
+          <div class="cost-item"><div class="ci-lbl">Cash left</div><div class="ci-val" id="cLeft">${fmt(cash - s.price)}</div></div>
+        </div>
+
+        <button class="btn btn-green" onclick="doBuy()">🚀 Buy Now!</button>
+      </div>
+    </div>
+  `;
+}
+
+function updateCost() {
+  if (!lastStock) return;
+  const n = parseFloat(document.getElementById('buyShares').value) || 0;
+  const total = n * lastStock.price;
+  document.getElementById('cShares').textContent = n;
+  document.getElementById('cTotal').textContent = fmt(total);
+  document.getElementById('cLeft').textContent = fmt(cash - total);
+  document.getElementById('cTotal').style.color = total > cash ? 'var(--red)' : 'var(--ink)';
+  document.getElementById('cLeft').style.color  = total > cash ? 'var(--red)' : 'var(--green2)';
+}
+
+function doBuy() {
+  if (!lastStock) return;
+  const shares = parseFloat(document.getElementById('buyShares').value);
+  const thesis = document.getElementById('buyThesis').value.trim();
+  const email  = document.getElementById('buyEmail').value.trim();
+  const period = parseInt(document.getElementById('buyCheckin').value);
+  const total  = shares * lastStock.price;
+
+  if (!shares || shares <= 0)  { toast('⚠️ Enter a valid number of shares!'); return; }
+  if (total > cash)            { toast('⚠️ Not enough cash!'); return; }
+  if (!thesis)                 { toast('📝 Write your reason for buying first!'); return; }
+
+  const t = lastStock.ticker;
+  if (!portfolio[t]) {
+    portfolio[t] = {
+      company: lastStock.company, shares: 0,
+      buyPrice: lastStock.price, buyDate: new Date().toISOString(),
+      currentPrice: lastStock.price, thesis: [], reminders: []
+    };
+  }
+  portfolio[t].shares += shares;
+  portfolio[t].currentPrice = lastStock.price;
+  cash -= total;
+
+  portfolio[t].thesis.unshift({ text: thesis, outlook: 'bullish', date: new Date().toISOString(), type: 'buy' });
+
+  if (email) {
+    const d = new Date(); d.setDate(d.getDate() + period);
+    portfolio[t].reminders.push({ email, date: d.toISOString(), period });
+  }
+
+  document.getElementById('cashDisplay').textContent = fmt(cash).slice(1);
+  document.getElementById('cashDisplay').previousSibling.textContent = '';
+  updateCashDisplay();
+  toast(`🎉 Bought ${shares} share(s) of ${t}!`);
+  document.getElementById('stockResult').innerHTML = '';
+  document.getElementById('tickerInput').value = '';
+  lastStock = null;
+}
+
+function updateCashDisplay() {
+  document.getElementById('cashDisplay').textContent = fmt(cash);
+}
+
+// ─── PORTFOLIO ────────────────────────────────────────
+async function loadPortfolio() {
+  const keys = Object.keys(portfolio);
+  const stats = document.getElementById('portStats');
+  const list  = document.getElementById('holdingsList');
+
+  if (!keys.length) {
+    stats.innerHTML = '';
+    list.innerHTML = `<div class="empty">
+      <div class="ei">📭</div>
+      <h3>No holdings yet!</h3>
+      <p>Head to Explore to buy your first stock.</p>
+      <button class="btn btn-blue" onclick="document.querySelector('nav button').click()">🔍 Explore Stocks</button>
+    </div>`;
+    return;
+  }
+
+  list.innerHTML = '<div class="loader"><div class="spin"></div> Refreshing prices…</div>';
+  for (const t of keys) {
+    try { const s = await fetchStock(t); portfolio[t].currentPrice = s.price; } catch(e) {}
+  }
+
+  let tv = 0, tc = 0;
+  keys.forEach(t => { tv += portfolio[t].shares * portfolio[t].currentPrice; tc += portfolio[t].shares * portfolio[t].buyPrice; });
+  const pnl = tv - tc;
+  const pct = tc > 0 ? (pnl/tc)*100 : 0;
+
+  stats.innerHTML = `
+    <div class="pstat"><div class="pl">💵 Cash</div><div class="pv" style="color:var(--green2)">${fmt(cash)}</div></div>
+    <div class="pstat"><div class="pl">📈 Stock Value</div><div class="pv">${fmt(tv)}</div></div>
+    <div class="pstat"><div class="pl">🏦 Total Assets</div><div class="pv">${fmt(cash+tv)}</div></div>
+    <div class="pstat"><div class="pl">📊 Total P&amp;L</div><div class="pv ${pnl>=0?'up':'dn'}">${pnl>=0?'+':''}${fmt(pnl)}</div></div>
+  `;
+
+  list.innerHTML = keys.map(t => {
+    const h = portfolio[t];
+    const pnl2 = (h.currentPrice - h.buyPrice) * h.shares;
+    const pct2 = ((h.currentPrice - h.buyPrice) / h.buyPrice) * 100;
+    const up = pnl2 >= 0;
+    const note = h.thesis[0] || null;
+    const rem  = h.reminders[0] || null;
+    return `
+    <div class="holding">
+      <div class="h-top">
+        <div>
+          <div class="h-ticker">${t}</div>
+          <div class="h-name">${h.company}</div>
+        </div>
+        <div style="text-align:right;">
+          <div class="${up?'up':'dn'}" style="font-family:'Baloo 2',cursive;font-size:1.15rem;font-weight:800;">${up?'+':''}${fmt(pnl2)}</div>
+          <div class="${up?'up':'dn'}" style="font-size:0.82rem;font-weight:600;">${up?'▲':'▼'} ${Math.abs(pct2).toFixed(2)}%</div>
+        </div>
+      </div>
+      <div class="h-stats">
+        <div class="h-stat"><div class="hl">Shares</div><div class="hv">${h.shares}</div></div>
+        <div class="h-stat"><div class="hl">Buy Price</div><div class="hv">${fmt(h.buyPrice)}</div></div>
+        <div class="h-stat"><div class="hl">Current</div><div class="hv">${fmt(h.currentPrice)}</div></div>
+        <div class="h-stat"><div class="hl">Value</div><div class="hv">${fmt(h.shares*h.currentPrice)}</div></div>
+      </div>
+      ${note ? `<div class="thesis-snip">"${note.text.length>110?note.text.slice(0,110)+'…':note.text}"</div>` : ''}
+      ${rem  ? `<div style="margin-bottom:12px;"><span class="reminder-badge">⏰ Check-in: ${new Date(rem.date).toLocaleDateString()}</span></div>` : ''}
+      <div class="h-actions">
+        <button class="btn btn-blue btn-sm" onclick="openDetail('${t}')">📊 View Details</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ─── DETAIL MODAL ─────────────────────────────────────
+function openDetail(t) {
+  activeDetail = t;
+  const h = portfolio[t];
+  document.getElementById('detailTitle').textContent = `${t} — ${h.company}`;
+
+  const pnl = (h.currentPrice - h.buyPrice) * h.shares;
+  const pct = ((h.currentPrice - h.buyPrice) / h.buyPrice) * 100;
+  const up  = pnl >= 0;
+
+  document.getElementById('detailStatus').innerHTML = `
+    <div class="stat-grid">
+      <div class="stat-box"><div class="slbl">Shares</div><div class="sval">${h.shares}</div></div>
+      <div class="stat-box"><div class="slbl">Buy Price</div><div class="sval">${fmt(h.buyPrice)}</div></div>
+      <div class="stat-box"><div class="slbl">Current</div><div class="sval">${fmt(h.currentPrice)}</div></div>
+      <div class="stat-box"><div class="slbl">Value</div><div class="sval">${fmt(h.shares*h.currentPrice)}</div></div>
+      <div class="stat-box"><div class="slbl">P&amp;L</div><div class="sval ${up?'up':'dn'}">${up?'+':''}${fmt(pnl)}</div></div>
+      <div class="stat-box"><div class="slbl">Return</div><div class="sval ${up?'up':'dn'}">${up?'+':''}${pct.toFixed(2)}%</div></div>
+    </div>`;
+
+  document.getElementById('sellInfo').innerHTML =
+    `Selling <strong>${h.shares} shares</strong> at ${fmt(h.currentPrice)} returns <strong style="color:${up?'var(--green2)':'var(--red)'}">${fmt(h.shares*h.currentPrice)}</strong> to your cash — a ${up?'gain':'loss'} of <strong style="color:${up?'var(--green2)':'var(--red)'}">${up?'+':''}${fmt(pnl)}</strong>.`;
+
+  renderNotes(); renderReminders();
+  document.getElementById('detailOverlay').classList.add('open');
+}
+
+function renderNotes() {
+  const h = portfolio[activeDetail];
+  const el = document.getElementById('thesisList');
+  if (!h.thesis.length) { el.innerHTML = '<p style="color:var(--muted);font-size:0.85rem;margin-bottom:12px;">No notes yet.</p>'; return; }
+  el.innerHTML = h.thesis.map(e => `
+    <div class="thesis-entry">
+      <div class="te-meta">${new Date(e.date).toLocaleString()} ${e.type==='buy'?'· 🛒 Initial Buy':'· ✏️ Update'}</div>
+      <div class="te-text">${e.text}</div>
+      <span class="te-outlook ol-${e.outlook}">${e.outlook==='bullish'?'🟢 Bullish':e.outlook==='bearish'?'🔴 Bearish':'🟡 Neutral'}</span>
+    </div>`).join('');
+}
+
+function renderReminders() {
+  const h = portfolio[activeDetail];
+  const el = document.getElementById('reminderList');
+  if (!h.reminders.length) { el.innerHTML = '<p style="color:var(--muted);font-size:0.85rem;margin-bottom:12px;">No reminders set.</p>'; return; }
+  el.innerHTML = h.reminders.map((r,i) => `
+    <div class="reminder-row">
+      <div><div class="rr-date">📅 ${new Date(r.date).toLocaleDateString()}</div>
+      <div class="rr-sub">${r.email} · ${r.period===7?'1 week':r.period===30?'1 month':r.period===90?'3 months':'1 year'}</div></div>
+      <button class="btn btn-ghost btn-sm" onclick="delReminder(${i})">✕</button>
+    </div>`).join('');
+}
+
+function saveNote() {
+  const text = document.getElementById('newNote').value.trim();
+  const outlook = document.getElementById('newOutlook').value;
+  if (!text) { toast('Write something first!'); return; }
+  portfolio[activeDetail].thesis.unshift({ text, outlook, date: new Date().toISOString(), type: 'update' });
+  document.getElementById('newNote').value = '';
+  renderNotes(); toast('💾 Note saved!');
+}
+
+function addReminder() {
+  const email = document.getElementById('remEmail').value.trim();
+  const period = parseInt(document.getElementById('remPeriod').value);
+  if (!email || !email.includes('@')) { toast('⚠️ Enter a valid email!'); return; }
+  const d = new Date(); d.setDate(d.getDate() + period);
+  portfolio[activeDetail].reminders.push({ email, date: d.toISOString(), period });
+  document.getElementById('remEmail').value = '';
+  renderReminders(); toast(`⏰ Reminder set for ${d.toLocaleDateString()}!`);
+}
+
+function delReminder(i) { portfolio[activeDetail].reminders.splice(i,1); renderReminders(); toast('Reminder removed.'); }
+
+function doSell() {
+  const t = activeDetail;
+  const proceeds = portfolio[t].shares * portfolio[t].currentPrice;
+  cash += proceeds; delete portfolio[t];
+  updateCashDisplay();
+  closeOverlay('detailOverlay');
+  toast(`💸 Sold ${t} for ${fmt(proceeds)}!`);
+  loadPortfolio();
+}
+
+// ─── LEARN ────────────────────────────────────────────
+const topics = [
+  { icon:'📈', bg:'#d5f5e3', title:'What is a Stock?',
+    body:`<p>A <strong>stock</strong> is a tiny piece of a company. When a company wants to raise money to grow, it sells small pieces — called <em>shares</em> — to the public.</p><br><p>When you own a share of Apple, you literally own a tiny slice of the company that makes iPhones! 🍎</p><br><p>If the company does well, more people want to buy shares, and the price goes up. If it struggles, the price can fall. That's the exciting part of investing!</p>` },
+  { icon:'🏦', bg:'#d6eaf8', title:'What is the Stock Market?',
+    body:`<p>The <strong>stock market</strong> is like a giant store that's open Monday–Friday where people buy and sell shares of companies all day long.</p><br><p>In the US, the two biggest are the <strong>NYSE</strong> and <strong>NASDAQ</strong>. They're open 9:30 AM – 4:00 PM Eastern Time. During those hours, prices change every second!</p>` },
+  { icon:'🎯', bg:'#f9ebea', title:'What is a Ticker Symbol?',
+    body:`<p>Every public company has a short code called a <strong>ticker symbol</strong>. Think of it as the company's nickname on the stock market.</p><br><ul style="padding-left:1.4em;line-height:2.2;margin-top:8px;"><li>Apple → <strong>AAPL</strong></li><li>Tesla → <strong>TSLA</strong></li><li>Amazon → <strong>AMZN</strong></li><li>Google → <strong>GOOGL</strong></li><li>Nike → <strong>NKE</strong></li></ul>` },
+  { icon:'📊', bg:'#fef9e7', title:'What is P&L?',
+    body:`<p><strong>P&L</strong> means Profit & Loss — it shows how much you've made or lost.</p><br><p><strong>Formula:</strong> (Current Price – Buy Price) × Shares</p><br><p><strong>Example:</strong> You buy 5 shares of TSLA at $200. A month later it's $250. Your profit = (250–200) × 5 = <strong>$250! 🎉</strong></p><br><p>If it drops to $180, your loss = (180–200) × 5 = <strong>-$100.</strong> That's investing risk!</p>` },
+  { icon:'⏳', bg:'#e8daef', title:'Why Hold Long Term?',
+    body:`<p>The best investors, like <strong>Warren Buffett</strong>, buy great companies and hold them for many years.</p><br><p>The stock market goes up and down every day — but over long periods it has always gone up. Patience is a superpower in investing! 💪</p><br><p>If you'd bought $1,000 of Apple stock in 2010, it would be worth over <strong>$150,000 today!</strong> 🚀</p>` },
+  { icon:'🧠', bg:'#d5f5e3', title:'What is an Investment Thesis?',
+    body:`<p>An <strong>investment thesis</strong> is your written reason for buying a stock. It forces you to think clearly instead of just guessing.</p><br><p>A good thesis answers:</p><ul style="padding-left:1.4em;line-height:2.2;margin-top:8px;"><li>What does this company do?</li><li>Why is it special or better than competitors?</li><li>How does it make money?</li><li>What could go wrong?</li></ul>` },
+  { icon:'🎲', bg:'#fde8d8', title:'Risk & Diversification',
+    body:`<p><strong>Risk</strong> is the chance your investment goes down. <em>All</em> investments carry some risk!</p><br><p><strong>Diversification</strong> means spreading your money across many different stocks so if one falls, the others can hold you up. "Don't put all your eggs in one basket!" 🥚🧺</p><br><p>Smart investors own stocks across different industries — tech, food, healthcare, energy, and more.</p>` },
+  { icon:'📉', bg:'#d6eaf8', title:'What is a Market Crash?',
+    body:`<p>Sometimes the whole market falls sharply — this is called a <strong>bear market</strong> or crash.</p><br><p>Famous crashes: 2008 Financial Crisis, 2020 COVID crash. Scary in the moment — but the market <em>always</em> recovered and reached new highs afterward.</p><br><p>The lesson? <strong>Don't panic-sell during a crash.</strong> Stay calm, think long term, and trust in good companies. 🧘</p>` },
+];
+
+function loadLearn() {
+  document.getElementById('learnGrid').innerHTML = topics.map((t,i) => `
+    <div class="learn-card" onclick="openLearn(${i})">
+      <div class="lc-top">
+        <div class="lc-icon" style="background:${t.bg}">${t.icon}</div>
+        <h3>${t.title}</h3>
+      </div>
+      <p>Tap to learn more →</p>
+    </div>`).join('');
+}
+
+function openLearn(i) {
+  document.getElementById('learnTitle').textContent = topics[i].icon + ' ' + topics[i].title;
+  document.getElementById('learnBody').innerHTML = topics[i].body;
+  document.getElementById('learnOverlay').classList.add('open');
+}
+
+// ─── INIT ─────────────────────────────────────────────
+updateCashDisplay();
+loadLearn();
+</script>
+</body>
+</html>
